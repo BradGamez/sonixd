@@ -95,7 +95,7 @@ const getCoverArtUrl = (item: any, size?: number) => {
   }
   
   axios(`${API_BASE_URL}/Items/${item.AlbumId}/RemoteImages?api_key=${auth.token}&type=Primary`).then(response => {
-    if (response.data > 0) {
+    if (response.data.Images.length > 0) {
       return returnData.Images[0].Url;
     } else {
       return 'img/placeholder.png';
