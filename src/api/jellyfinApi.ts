@@ -94,14 +94,13 @@ const getCoverArtUrl = (item: any, size?: number) => {
     return 'img/placeholder.png';
   }
   
-  let returnedData;
   axios(`${API_BASE_URL}/Items/${item.AlbumId}/RemoteImages?api_key=${auth.token}&type=Primary`).then(response => {
-    returnedData = response.data
-  });
-  if (returnedData.Images.size === 0) {
+    if (response.data > 0) {
+      return returnData.Images[0].Url;
+    } else {
       return 'img/placeholder.png';
-  }
-  return returnData.Images[0].Url;
+    }
+  });
 };
 
 export const getDownloadUrl = (options: { id: string }) => {
