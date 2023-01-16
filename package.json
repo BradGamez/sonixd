@@ -100,7 +100,7 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "jeffvli",
+      "owner": "BradGamez",
       "repo": "sonixd"
     }
   },
