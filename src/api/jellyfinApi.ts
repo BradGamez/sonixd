@@ -91,16 +91,15 @@ const getStreamUrl = (id: string, container: string, mediaSourceId: string, eTag
 };
 const getCoverArtUrl = (item: any, size?: number) => {
   if (!item.ImageTags?.Primary && !item.AlbumPrimaryImageTag) {
-    return 'img/placeholder.png';
+    return 'https://media.bradgamez.xyz/images/jellyfinplaceholder.jpg';
   }
-  
-  axios(`${API_BASE_URL}/Items/${item.AlbumId}/RemoteImages?api_key=${auth.token}&type=Primary`).then(response => {
-    if (response.data.Images.length > 0) {
-      return returnData.Images[0].Url;
-    } else {
-      return 'img/placeholder.png';
-    }
-  });
+
+  size = size ? size : 350;
+  if (item.ImageTags.Primary) {
+    return `https://media.bradgamez.xyz/jellyfinimages?id=${item.Id}&size=${size}`;
+  }
+
+  return `https://media.bradgamez.xyz/jellyfinimages?id=${item.AlbumId}&size=${size}`;
 };
 
 export const getDownloadUrl = (options: { id: string }) => {
