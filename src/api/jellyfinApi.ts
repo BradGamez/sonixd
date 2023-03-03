@@ -1,7 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
-import settings from 'electron-settings';
 import _ from 'lodash';
 import moment from 'moment';
 import { nanoid } from 'nanoid/non-secure';
@@ -10,9 +9,10 @@ import { handleDisconnect } from '../components/settings/DisconnectButton';
 import { notifyToast } from '../components/shared/toast';
 import { GenericItem, Item, Song } from '../types';
 import { mockSettings } from '../shared/mockSettings';
+import { settings } from '../components/shared/setDefaultSettings';
 
 const transcode =
-  process.env.NODE_ENV === 'test' ? mockSettings.transcode : Boolean(settings.getSync('transcode'));
+  process.env.NODE_ENV === 'test' ? mockSettings.transcode : Boolean(settings.get('transcode'));
 
 const getAuth = () => {
   return {
@@ -488,6 +488,30 @@ export const getSongs = async (options: {
     (data.Items || []).map((entry: any) => normalizeSong(entry)),
     data.TotalRecordCount
   );
+};
+
+export const getTopSongs = async (options: {
+  artist: string;
+  count: number;
+  musicFolderId?: string;
+}) => {
+  const { data } = await jellyfinApi.get(`/users/${auth.username}/items`, {
+    params: {
+      artistIds: options.artist,
+      fields: 'Genres, DateCreated, MediaSources, ParentId',
+      includeItemTypes: 'Audio',
+      limit: options.count,
+      startIndex: 0,
+      parentId: options.musicFolderId,
+      recursive: true,
+      sortBy: 'CommunityRating',
+      sortOrder: 'Descending',
+      imageTypeLimit: 1,
+      enableImageTypes: 'Primary',
+    },
+  });
+
+  return (data.Items || []).map((entry: any) => normalizeSong(entry));
 };
 
 export const getArtist = async (options: { id: string; musicFolderId?: string }) => {
